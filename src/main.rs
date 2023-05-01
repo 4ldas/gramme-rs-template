@@ -8,14 +8,10 @@ use std::{
     sync::Arc
 };
 use tracing_subscriber::{
-    layer::SubscriberExt,
-    util::SubscriberInitExt
+    layer::SubscriberExt, util::SubscriberInitExt,
 };
 use grammers_client::{
-    Config,
-    InitParams,
-    Client,
-    SignInError
+    Config, InitParams, Client, SignInError,
 };
 use grammers_session::Session;
 
@@ -24,7 +20,7 @@ use grammers_session::Session;
 async fn main() -> eyre::Result<()> {
     dotenv::dotenv().ok();
     tracing_subscriber::registry()
-        .with(tracing_subscriber::EnvFilter::try_from_default_env().unwrap())
+        .with(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_default())
         .with(tracing_subscriber::fmt::layer())
         .init();
     let (api_hash, api_id, session_file) = (
@@ -35,7 +31,7 @@ async fn main() -> eyre::Result<()> {
 
     let client = Client::connect(Config {
         api_hash: api_hash.to_string(),
-        api_id: api_id,
+        api_id,
         params: InitParams {
             catch_up: true,
             ..Default::default()
